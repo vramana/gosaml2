@@ -48,7 +48,7 @@ func (ea *EncryptedAssertion) DecryptBytes(cert *tls.Certificate) ([]byte, error
 			return nil, fmt.Errorf("cannot open AES-GCM: %s", err)
 		}
 		return plainText, nil
-	case MethodAES128CBC, MethodAES256CBC:
+	case MethodAES128CBC, MethodAES256CBC, MethodTripleDESCBC:
 		nonce, data := data[:k.BlockSize()], data[k.BlockSize():]
 		c := cipher.NewCBCDecrypter(k, nonce)
 		c.CryptBlocks(data, data)
@@ -60,8 +60,6 @@ func (ea *EncryptedAssertion) DecryptBytes(cert *tls.Certificate) ([]byte, error
 		padLength := data[len(data)-1]
 		lastGoodIndex := len(data) - int(padLength)
 		return data[:lastGoodIndex], nil
-	case MethodTripleDESCBC:
-		return nil, fmt.Errorf("unimplemented")
 	default:
 		return nil, fmt.Errorf("unknown symmetric encryption method %#v", ea.EncryptionMethod.Algorithm)
 	}
