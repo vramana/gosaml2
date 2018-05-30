@@ -60,6 +60,8 @@ func (ea *EncryptedAssertion) DecryptBytes(cert *tls.Certificate) ([]byte, error
 		padLength := data[len(data)-1]
 		lastGoodIndex := len(data) - int(padLength)
 		return data[:lastGoodIndex], nil
+	case MethodTripleDESCBC:
+		return nil, fmt.Errorf("unimplemented")
 	default:
 		return nil, fmt.Errorf("unknown symmetric encryption method %#v", ea.EncryptionMethod.Algorithm)
 	}

@@ -47,9 +47,10 @@ const (
 
 //Well-known private key encryption methods
 const (
-	MethodAES128GCM = "http://www.w3.org/2009/xmlenc11#aes128-gcm"
-	MethodAES128CBC = "http://www.w3.org/2001/04/xmlenc#aes128-cbc"
-	MethodAES256CBC = "http://www.w3.org/2001/04/xmlenc#aes256-cbc"
+	MethodAES128GCM    = "http://www.w3.org/2009/xmlenc11#aes128-gcm"
+	MethodAES128CBC    = "http://www.w3.org/2001/04/xmlenc#aes128-cbc"
+	MethodAES256CBC    = "http://www.w3.org/2001/04/xmlenc#aes256-cbc"
+	MethodTripleDESCBC = "http://www.w3.org/2001/04/xmlenc#tripledes-cbc"
 )
 
 //Well-known hash methods
@@ -142,6 +143,7 @@ func (ek *EncryptedKey) DecryptSymmetricKey(cert *tls.Certificate) (cipher.Block
 			if err != nil {
 				return nil, fmt.Errorf("rsa-1.5 internal error: %v", err)
 			}
+			fmt.Printf("Length of encryption key %d\n", len(pt))
 			b, err := des.NewTripleDESCipher(pt) // nolint
 			if err != nil {
 				return nil, err
