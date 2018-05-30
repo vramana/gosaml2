@@ -7,6 +7,7 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"fmt"
+	"io"
 	"io/ioutil"
 
 	"encoding/xml"
@@ -132,6 +133,8 @@ func (sp *SAMLServiceProvider) decryptAssertions(el *etree.Element) error {
 		}
 
 		raw, derr := encryptedAssertion.DecryptBytes(decryptCert)
+		ppdata, _ := formatXML(raw)
+		fmt.Printf("%s\n", ppdata)
 		if derr != nil {
 			return fmt.Errorf("unable to decrypt encrypted assertion: %v", derr)
 		}
@@ -155,6 +158,28 @@ func (sp *SAMLServiceProvider) decryptAssertions(el *etree.Element) error {
 		return err
 	} else {
 		return nil
+	}
+}
+
+// @Cleanup Remove later
+func formatXML(data []byte) ([]byte, error) {
+	b := &bytes.Buffer{}
+	decoder := xml.NewDecoder(bytes.NewReader(data))
+	encoder := xml.NewEncoder(b)
+	encoder.Indent("", "  ")
+	for {
+		token, err := decoder.Token()
+		if err == io.EOF {
+			encoder.Flush()
+			return b.Bytes(), nil
+		}
+		if err != nil {
+			return nil, err
+		}
+		err = encoder.EncodeToken(token)
+		if err != nil {
+			return nil, err
+		}
 	}
 }
 
