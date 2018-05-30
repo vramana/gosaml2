@@ -59,6 +59,7 @@ func (ea *EncryptedAssertion) DecryptBytes(cert *tls.Certificate) ([]byte, error
 		// Calculate index to remove based on padding
 		padLength := data[len(data)-1]
 		lastGoodIndex := len(data) - int(padLength)
+		fmt.Printf("%s\n", data[:lastGoodIndex])
 		return data[:lastGoodIndex], nil
 	default:
 		return nil, fmt.Errorf("unknown symmetric encryption method %#v", ea.EncryptionMethod.Algorithm)
