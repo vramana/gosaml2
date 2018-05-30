@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/des"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha1"
@@ -138,8 +139,14 @@ func (ek *EncryptedKey) DecryptSymmetricKey(cert *tls.Certificate) (cipher.Block
 			return b, nil
 		case MethodPKCS15:
 			pt, err := rsa.DecryptPKCS1v15(rand.Reader, pk, cipherText)
-			fmt.Printf("plain text %s \n", pt)
-			return nil, fmt.Errorf("incomplete. Error %v", err)
+			if err != nil {
+				return nil, fmt.Errorf("rsa-1.5 internal error: %v", err)
+			}
+			b, err := des.NewTripleDESCipher(pt) // nolint
+			if err != nil {
+				return nil, err
+			}
+			return b, nil
 		default:
 			fmt.Printf("Digest Algorithm %s \n", ek.EncryptionMethod.DigestMethod.Algorithm)
 			fmt.Printf("Encryption Algorithm %s \n", ek.EncryptionMethod.Algorithm)
