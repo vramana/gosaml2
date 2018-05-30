@@ -41,6 +41,7 @@ type DigestMethod struct {
 const (
 	MethodRSAOAEP  = "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"
 	MethodRSAOAEP2 = "http://www.w3.org/2009/xmlenc11#rsa-oaep"
+	MethodPKCS15   = "http://www.w3.org/2001/04/xmlenc#rsa-1_5"
 )
 
 //Well-known private key encryption methods
@@ -117,6 +118,9 @@ func (ek *EncryptedKey) DecryptSymmetricKey(cert *tls.Certificate) (cipher.Block
 				ek.EncryptionMethod.DigestMethod.Algorithm)
 		}
 
+		fmt.Printf("Digest Algorithm %s \n", ek.EncryptionMethod.DigestMethod.Algorithm)
+		fmt.Printf("Encryption Algorithm %s \n", ek.EncryptionMethod.Algorithm)
+
 		switch ek.EncryptionMethod.Algorithm {
 		case "":
 			return nil, fmt.Errorf("missing encryption algorithm")
@@ -133,6 +137,9 @@ func (ek *EncryptedKey) DecryptSymmetricKey(cert *tls.Certificate) (cipher.Block
 
 			return b, nil
 		default:
+			fmt.Printf("Digest Algorithm %s \n", ek.EncryptionMethod.DigestMethod.Algorithm)
+			fmt.Printf("Encryption Algorithm %s \n", ek.EncryptionMethod.Algorithm)
+
 			return nil, fmt.Errorf("unsupported encryption algorithm: %s", ek.EncryptionMethod.Algorithm)
 		}
 	}
