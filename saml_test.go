@@ -16,9 +16,9 @@ import (
 	"testing"
 
 	"github.com/beevik/etree"
-	"github.com/russellhaering/gosaml2/types"
 	dsig "github.com/russellhaering/goxmldsig"
 	"github.com/stretchr/testify/require"
+	"github.com/vramana/gosaml2/types"
 )
 
 var cert tls.Certificate
