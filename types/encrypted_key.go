@@ -120,9 +120,6 @@ func (ek *EncryptedKey) DecryptSymmetricKey(cert *tls.Certificate) (cipher.Block
 				ek.EncryptionMethod.DigestMethod.Algorithm)
 		}
 
-		fmt.Printf("Digest Algorithm %s \n", ek.EncryptionMethod.DigestMethod.Algorithm)
-		fmt.Printf("Encryption Algorithm %s \n", ek.EncryptionMethod.Algorithm)
-
 		switch ek.EncryptionMethod.Algorithm {
 		case "":
 			return nil, fmt.Errorf("missing encryption algorithm")
@@ -143,7 +140,6 @@ func (ek *EncryptedKey) DecryptSymmetricKey(cert *tls.Certificate) (cipher.Block
 			if err != nil {
 				return nil, fmt.Errorf("rsa-1.5 internal error: %v", err)
 			}
-			fmt.Printf("Length of encryption key %d\n", len(pt))
 			b, err := des.NewTripleDESCipher(pt) // nolint
 			if err != nil {
 				return nil, err
